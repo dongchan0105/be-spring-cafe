@@ -1,10 +1,21 @@
 package codesquad.codestagram.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Article {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;        // 게시글 id
     private String title;  // 게시글 제목
     private String content; // 게시글 내용
+
+    protected Article() {
+    }
 
     // 생성자
     public Article(int id, String title, String content) {

@@ -1,23 +1,43 @@
 package codesquad.codestagram.service;
 
+import codesquad.codestagram.dto.ArticleDto;
 import codesquad.codestagram.entity.Article;
+import codesquad.codestagram.repository.ArticleRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ArticleService {
 
+    private final ArticleRepository articleRepository;
     private List<Article> articles = new ArrayList<>();
+
+    public ArticleService(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+    }
 
     public List<Article> getArticles() {
         return articles;
     }
 
+    public List<Article> getArticlesV2(){
+        return articleRepository.findAll().stream()
+                .map(article -> new Article(article.getId(),article.getTitle(),article.getTitle()))
+                .collect(Collectors.toList());
+    }
+
     public void addArticle(Article article) {
         articles.add(article);
+    }
+
+    public void addArticleV2(ArticleDto request){
+        articleRepository.save(new Article(request.getTitle(),request.getContent()));
     }
 
     @PostConstruct
