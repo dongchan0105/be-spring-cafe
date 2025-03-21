@@ -1,6 +1,6 @@
 package codesquad.codestagram.service;
 
-import codesquad.codestagram.entity.User;
+import codesquad.codestagram.domain.User;
 import codesquad.codestagram.repository.UserRepositoryV2;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package codesquad.codestagram.controller;
 
-import codesquad.codestagram.entity.LoginForm;
-import codesquad.codestagram.entity.User;
+import codesquad.codestagram.domain.LoginForm;
+import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.LoginService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;

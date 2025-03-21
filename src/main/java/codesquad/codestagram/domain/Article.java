@@ -1,4 +1,4 @@
-package codesquad.codestagram.entity;
+package codesquad.codestagram.domain;
 
 import jakarta.persistence.*;
 
@@ -16,7 +16,6 @@ public class Article {
     private String content; // 게시글 내용
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // 외래 키 설정
     private User user;  // 작성자 (기존 코드 유지)
 
     protected Article() {
@@ -28,6 +27,13 @@ public class Article {
         this.content = content;
         this.user = user;
     }
+
+    public Article(String title,String content){
+        this.title = title;
+        this.content = content;
+    }
+
+
 
     // Getter & Setter
     public int getId() {

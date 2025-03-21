@@ -1,8 +1,11 @@
-package codesquad.codestagram.entity;
+package codesquad.codestagram.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Users")
@@ -28,6 +31,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @OneToMany(mappedBy = "user" ,cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Article> articles = new ArrayList<>();
+
     // 기본 생성자
     public User() {
     }
@@ -38,6 +44,11 @@ public class User {
         this.email = email;
         this.loginId = loginId;
         this.password = password;
+    }
+
+    public void addArticle(Article article) {
+        this.articles.add(article);
+        article.setUser(this);
     }
 
     // Getter & Setter

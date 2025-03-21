@@ -1,4 +1,4 @@
-package codesquad.codestagram.entity;
+package codesquad.codestagram.domain;
 
 import jakarta.validation.constraints.NotEmpty;
 

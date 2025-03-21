@@ -1,6 +1,6 @@
 package codesquad.codestagram.controller;
 
-import codesquad.codestagram.entity.User;
+import codesquad.codestagram.domain.User;
 import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;

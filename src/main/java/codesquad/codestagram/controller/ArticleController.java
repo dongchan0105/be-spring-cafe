@@ -1,7 +1,8 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.dto.ArticleDto;
-import codesquad.codestagram.entity.Article;
+import codesquad.codestagram.domain.Article;
+import codesquad.codestagram.dto.request.ArticleWriteRequest;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -50,18 +51,13 @@ public class ArticleController {
 
     // 게시글 작성
     @PostMapping("/write")
-    public String submitArticle(@RequestParam("title") String title,
-                                @RequestParam("content") String content,
-                                @RequestParam("userId") Long userId) {
-        if (userService.findUserById(userId).isEmpty()) {
+    public String submitArticle(@RequestBody ArticleWriteRequest request) {
+
+        if (userService.findUserById(request.getUser().getId()).isEmpty()) {
             return "redirect:/qna?error=userNotFound";
         }
 
-        ArticleDto articleDto = new ArticleDto();
-        articleDto.setTitle(title);
-        articleDto.setContent(content);
-
-        articleService.addArticleV2(articleDto, userId);
+        articleService.addArticleV2(request);
         return "redirect:/qna";
     }
 

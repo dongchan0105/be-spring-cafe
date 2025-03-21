@@ -1,8 +1,8 @@
 package codesquad.codestagram.service;
 
-import codesquad.codestagram.dto.ArticleDto;
-import codesquad.codestagram.entity.Article;
-import codesquad.codestagram.entity.User;
+import codesquad.codestagram.domain.Article;
+import codesquad.codestagram.domain.User;
+import codesquad.codestagram.dto.request.ArticleWriteRequest;
 import codesquad.codestagram.repository.ArticleRepository;
 import codesquad.codestagram.repository.UserRepositoryV2;
 import jakarta.annotation.PostConstruct;
@@ -43,13 +43,9 @@ public class ArticleService {
     }
 
     // 사용자를 지정해서 게시글 추가
-    public void addArticleV2(ArticleDto request, Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다.");
-        }
-        User user = userOptional.get();
-        articleRepository.save(new Article(request.getTitle(), request.getContent(), user));
+    public void addArticleV2(ArticleWriteRequest request) {
+        Article article = new Article(request.getTitle(), request.getContent(),request.getUser());
+        articleRepository.save(article);
     }
 
     @PostConstruct
