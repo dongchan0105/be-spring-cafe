@@ -1,10 +1,11 @@
 package codesquad.codestagram.controller;
 
 import codesquad.codestagram.entity.User;
-import codesquad.codestagram.repository.UserRepository;
+import codesquad.codestagram.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,33 +16,33 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     // 회원 가입 폼 페이지
     @GetMapping("/form")
-    public String showUserForm() {
+    public String showUserForm(Model model) {
+        model.addAttribute("user", new User());
         return "user/form";
     }
 
     // 회원 가입 처리
     @PostMapping()
-    public String registerUser(@Validated @ModelAttribute("User") User user) {
-        String name = user.getName();
-        String email = user.getEmail();
-        String loginId = user.getLoginId();
-        String password = user.getPassword();
-        userRepository.saveUser(name, email,loginId,password);
+    public String registerUser(@Validated @ModelAttribute("user") User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "user/form"; // 유효성 검증 실패 시 회원가입 폼으로 돌아감
+        }
+        userService.registerUser(user.getName(), user.getEmail(), user.getLoginId(), user.getPassword());
         return "redirect:/users";
     }
 
     // 회원 목록 조회
     @GetMapping
     public String listUsers(Model model) {
-        List<User> users = userRepository.getAllUsers();
+        List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "user/list";
     }
@@ -49,7 +50,7 @@ public class UserController {
     // 특정 회원 프로필 조회
     @GetMapping("/{userId}")
     public String userProfile(@PathVariable("userId") Long userId, Model model) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<User> user = userService.findUserById(userId);
         if (user.isEmpty()) {
             return "redirect:/users"; // 존재하지 않는 사용자 처리
         }
@@ -57,41 +58,41 @@ public class UserController {
         return "user/profile";
     }
 
+    // 회원 프로필 수정 페이지
     @GetMapping("/{userId}/edit")
     public String editUserProfile(@PathVariable("userId") Long userId, Model model, HttpSession session) {
-
-        // 세션에서 로그인한 사용자 정보 가져오기
         User loginUser = (User) session.getAttribute("loginUser");
 
-        // 로그인하지 않은 경우
         if (loginUser == null) {
-            return "redirect:/login"; // 로그인 페이지로 리다이렉트
+            return "redirect:/login";
         }
 
-        // 로그인한 사용자가 본인의 정보만 수정할 수 있도록 처리
         if (!loginUser.getId().equals(userId)) {
-            return "redirect:/users"; // 본인 외의 사용자는 수정할 수 없도록 처리
+            return "redirect:/users";
         }
 
-        // 사용자 정보 조회 후 모델에 추가
-        Optional<User> user = userRepository.findById(userId);
+        Optional<User> user = userService.findUserById(userId);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
-            return "user/profile-edit"; // profile-edit.html 반환
+            return "user/profile-edit";
         } else {
-            return "redirect:/users"; // 유저가 없으면 목록으로 이동
+            return "redirect:/users";
         }
     }
 
+    // 회원 정보 업데이트
     @PutMapping("/{userId}/form")
     public String updateUserProfile(@PathVariable("userId") Long userId,
                                     @RequestParam("password") String password,
                                     @RequestParam("name") String name,
-                                    @RequestParam("email") String email,
-                                    HttpSession session) {
-        // 프로필 업데이트
-        userRepository.updateUserProfile(userId, password, name, email);
+                                    @RequestParam("email") String email) {
+        userService.updateUserProfile(userId, password, name, email);
+        return "redirect:/users/" + userId;
+    }
 
-        return "redirect:/users/" + userId; // 수정된 프로필로 리다이렉트
+    @GetMapping("/users/form")
+    public String createForm(Model model) {
+        model.addAttribute("user", new User());
+        return "user/form";
     }
 }

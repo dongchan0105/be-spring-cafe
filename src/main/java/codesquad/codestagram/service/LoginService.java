@@ -1,7 +1,7 @@
 package codesquad.codestagram.service;
 
 import codesquad.codestagram.entity.User;
-import codesquad.codestagram.repository.UserRepository;
+import codesquad.codestagram.repository.UserRepositoryV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,16 +9,17 @@ import org.springframework.stereotype.Service;
 public class LoginService {
 
     @Autowired
-    private final UserRepository userRepository;
+    private final UserRepositoryV2 userRepository;
 
-    public LoginService(UserRepository userRepository) {
+    public LoginService(UserRepositoryV2 userRepository) {
         this.userRepository = userRepository;
     }
 
     public User login(String loginId, String password) {
-        return userRepository.findByLoginId(loginId)
-                .filter(m->m.getPassword().equals(password))
-                .orElse(null);
+        User findByLoginId = userRepository.findByLoginId(loginId);
+        if(findByLoginId.getPassword().equals(password))
+            return findByLoginId;
+        return null;
     }
 
 
