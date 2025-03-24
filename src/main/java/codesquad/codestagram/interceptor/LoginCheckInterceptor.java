@@ -7,7 +7,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 public class LoginCheckInterceptor implements HandlerInterceptor {
 
-    public static final String LOGIN_MEMBER = "loginMember";
+    public static final String LOGIN_USER = "loginUser";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -16,8 +16,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession(false);
 
-        if(session == null || session.getAttribute(LOGIN_MEMBER)==null){
-            response.sendRedirect("/login" + requestURI);
+        if(session == null || session.getAttribute(LOGIN_USER)==null){
+            response.sendRedirect("/login");
             return false;
         }
 

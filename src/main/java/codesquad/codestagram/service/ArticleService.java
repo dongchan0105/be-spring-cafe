@@ -48,6 +48,9 @@ public class ArticleService {
             userRepository.save(defaultUser);
         }
 
+        User administrator = new User("김동찬","codesquad@gmail.com","hello","word!");
+        userRepository.save(administrator);
+
         articleRepository.save(new Article("InitializingBean implements afterPropertiesSet() 호출되지 않는 문제.",
                 "A 에 의존성을 가지는 B라는 클래스가 있습니다.\n\n" +
                         "B라는 클래스는 InitializingBean 을 상속하고 afterPropertiesSet을 구현하고 있습니다. 서버가 가동되면서 bean들이 초기화되는 시점에 B라는 클래스의 afterPropertiesSet 메소드는\n\n" +

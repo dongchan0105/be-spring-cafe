@@ -1,5 +1,6 @@
 package codesquad.codestagram.controller;
 
+import codesquad.codestagram.annotation.Login;
 import codesquad.codestagram.domain.Article;
 import codesquad.codestagram.domain.User;
 import codesquad.codestagram.dto.request.ArticleWriteRequest;
@@ -47,10 +48,9 @@ public class ArticleController {
 
     // 게시글 작성 폼 페이지
     @GetMapping("/form")
-    public String showForm(HttpSession session, RedirectAttributes redirectAttributes) {
-        User loginUser = (User) session.getAttribute("loginUser");
+    public String showForm(@Login User user, RedirectAttributes redirectAttributes) {
 
-        if (loginUser == null) {
+        if (user == null) {
             // 로그인되지 않은 경우 메시지와 함께 로그인 페이지로 리다이렉트
             redirectAttributes.addFlashAttribute("loginMessage", "게시글 작성을 위해 로그인이 필요합니다.");
             return "redirect:/login";
@@ -61,10 +61,15 @@ public class ArticleController {
 
     // 게시글 작성
     @PostMapping("/write")
-    public String submitArticle(@RequestBody ArticleWriteRequest request) {
+    public String submitArticle(@Login User user, @ModelAttribute ArticleWriteRequest request) {
+        request.setUser(user);
 
-        if (userService.findUserById(request.getUser().getId()).isEmpty()) {
+        if (user == null) {
             return "redirect:/qna?error=userNotFound";
+        }
+
+        if (request.getContent() == null || request.getContent().isEmpty()) {
+            return "redirect:/qna?error=contentRequired";
         }
 
         articleService.addArticleV2(request);
