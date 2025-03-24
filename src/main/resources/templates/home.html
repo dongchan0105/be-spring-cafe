@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>홈</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .home-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .home-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+            font-size: 2rem;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .menu-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: #333;
+        }
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: #333;
+        }
+        .menu-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #0d6efd;
+        }
+        .menu-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .menu-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .welcome-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .welcome-text {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .btn-login {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0d6efd;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .btn-login:hover {
+            background-color: #0b5ed7;
+            color: white;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .user-name {
+            font-weight: 500;
+            color: #333;
+        }
+        .btn-logout {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+        .btn-logout:hover {
+            background-color: #bb2d3b;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="home-container">
+            <h1 class="home-title">환영합니다!</h1>
+            
+            <div th:if="${session.loginUser == null}" class="welcome-section">
+                <h2 class="welcome-title">로그인이 필요합니다</h2>
+                <p class="welcome-text">서비스를 이용하시려면 로그인해주세요.</p>
+                <a th:href="@{/login}" class="btn-login">로그인하기</a>
+            </div>
+
+            <div th:if="${session.loginUser != null}" class="welcome-section">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <span th:text="${session.loginUser.name.substring(0, 1)}"></span>
+                    </div>
+                    <span class="user-name" th:text="${session.loginUser.name}"></span>
+                    <a th:href="@{/logout}" class="btn-logout">로그아웃</a>
+                </div>
+            </div>
+
+            <div class="menu-grid">
+                <a th:href="@{/qna/articles}" class="menu-item">
+                    <div class="menu-icon">
+                        <i class="bi bi-question-circle"></i>
+                    </div>
+                    <h3 class="menu-title">Q&A 게시판</h3>
+                    <p class="menu-description">질문과 답변을 주고받는 공간입니다.</p>
+                </a>
+
+                <a th:href="@{/users}" class="menu-item">
+                    <div class="menu-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h3 class="menu-title">회원 목록</h3>
+                    <p class="menu-description">가입한 회원들의 목록을 확인할 수 있습니다.</p>
+                </a>
+
+                <a th:href="@{/users/form}" class="menu-item">
+                    <div class="menu-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <h3 class="menu-title">회원 가입</h3>
+                    <p class="menu-description">새로운 회원으로 가입할 수 있습니다.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
