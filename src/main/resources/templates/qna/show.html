@@ -7,134 +7,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        .article-container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .article-header {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .article-title {
-            font-size: 2rem;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .article-meta {
-            color: #666;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .article-meta i {
-            margin-right: 5px;
-        }
-        .article-content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #333;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            white-space: pre-wrap;
-        }
-        .button-group {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #dee2e6;
-        }
-        .btn {
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
-        }
-        .btn i {
-            font-size: 1.1em;
-        }
-        .btn-edit {
-            background-color: #0d6efd;
-            color: white;
-            border: none;
-        }
-        .btn-edit:hover {
-            background-color: #0b5ed7;
-            color: white;
-            transform: translateY(-2px);
-        }
-        .btn-delete {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-        }
-        .btn-delete:hover {
-            background-color: #bb2d3b;
-            color: white;
-            transform: translateY(-2px);
-        }
-        .btn-list {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-        }
-        .btn-list:hover {
-            background-color: #5c636a;
-            color: white;
-            transform: translateY(-2px);
-        }
-        .comments-section {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #dee2e6;
-        }
-        .comments-title {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .comment-form {
-            margin-bottom: 30px;
-        }
-        .comment-item {
-            padding: 15px;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: #666;
-            font-size: 0.9rem;
-        }
-        .comment-content {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        .comment-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .comment-actions button {
-            padding: 4px 8px;
-            font-size: 0.8rem;
-        }
+        /* 기존 스타일 유지 */
+        .article-container { max-width: 800px; margin: 20px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .comments-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #dee2e6; }
+        .comments-title { margin-bottom: 20px; color: #333; }
+        .comment-item { padding: 15px; border-bottom: 1px solid #dee2e6; }
+        .comment-header { display: flex; justify-content: space-between; margin-bottom: 10px; color: #666; font-size: 0.9rem; }
+        .comment-content { margin-bottom: 10px; line-height: 1.5; }
+        .comment-actions { display: flex; gap: 10px; }
     </style>
 </head>
 <body class="bg-light">
 <div class="container">
     <div class="article-container">
+        <!-- 게시글 정보 -->
         <div class="article-header">
             <h1 class="article-title" th:text="${article.title}">제목</h1>
             <div class="article-meta">
@@ -146,66 +32,34 @@
             게시글 내용
         </div>
 
-        <div class="button-group">
-            <div th:if="${session.loginUser != null and session.loginUser.id == article.user.id}">
-                <form th:action="@{/qna/articles/{articleId}/edit(articleId=${article.id})}" method="get" style="display: inline;">
-                    <button type="submit" class="btn btn-edit">
-                        <i class="bi bi-pencil-square"></i>수정
-                    </button>
-                </form>
-                <form th:action="@{/qna/articles/{articleId}/delete(articleId=${article.id})}" method="post" style="display: inline;">
-                    <input type="hidden" name="_method" value="delete">
-                    <button type="submit" class="btn btn-delete" onclick="return confirm('정말 삭제하시겠습니까?')">
-                        <i class="bi bi-trash"></i>삭제
-                    </button>
-                </form>
-            </div>
-            <a th:href="@{/qna}" class="btn btn-list">
-                <i class="bi bi-list"></i>목록으로
-            </a>
-        </div>
-
         <!-- 댓글 섹션 -->
         <div class="comments-section">
             <h3 class="comments-title">댓글</h3>
-            
+
             <!-- 댓글 작성 폼 -->
             <div th:if="${session.loginUser != null}" class="comment-form">
-                <form th:action="@{/comments/articles/{articleId}(articleId=${article.id})}" method="post">
-                    <textarea name="content" class="form-control" rows="3" placeholder="댓글을 입력하세요" required></textarea>
-                    <button type="submit" class="btn btn-primary mt-2">
-                        <i class="bi bi-chat-dots"></i>댓글 작성
-                    </button>
-                </form>
+                <textarea id="comment-input" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                <!-- 댓글 작성 버튼 -->
+                <button th:attr="data-article-id=${article.id}" onclick="addComment(this.dataset.articleId)" class="btn btn-primary">
+                    댓글 작성
+                </button>
             </div>
             <div th:unless="${session.loginUser != null}" class="alert alert-info">
                 댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.
             </div>
 
             <!-- 댓글 목록 -->
-            <div class="comments-list mt-4">
-                <div th:each="comment : ${article.comments}" class="comment-item">
+            <div id="comment-list" class="comments-list mt-4">
+                <!-- 댓글 항목 -->
+                <div th:each="comment : ${article.comments}" class="comment-item" id="comment-[[${comment.id}]]">
                     <div class="comment-header">
                         <span class="comment-author" th:text="${comment.user.name}">작성자</span>
                         <span class="comment-date" th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</span>
                     </div>
-                    <!-- 댓글이 수정되었으면 "(수정됨)"과 마지막 수정 시간 표시 -->
-                    <span th:if="${comment.modifiedDate != null and comment.createdDate != comment.modifiedDate}">
-                    (수정됨: <span th:text="${#temporals.format(comment.modifiedDate, 'yyyy-MM-dd HH:mm')}"></span>)
-                </span>
                     <div class="comment-content" th:text="${comment.comment}">댓글 내용</div>
+                    <!-- 댓글 수정/삭제 버튼 -->
                     <div class="comment-actions" th:if="${session.loginUser != null and session.loginUser.id == comment.user.id}">
-                        <form th:action="@{/comments/{articleId}/{commentId}/edit(articleId=${article.id}, commentId=${comment.id})}" method="post" style="display: inline;">
-                            <input type="text" name="content" th:value="${comment.comment}" class="form-control form-control-sm d-inline-block w-auto">
-                            <button type="submit" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i>수정
-                            </button>
-                        </form>
-                        <form th:action="@{/comments/{articleId}/{commentId}/delete(articleId=${article.id}, commentId=${comment.id})}" method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('댓글을 삭제하시겠습니까?')">
-                                <i class="bi bi-trash"></i>삭제
-                            </button>
-                        </form>
+                        <button onclick="deleteComment(this.dataset.commentId)" data-comment-id="${comment.id}">삭제</button>
                     </div>
                 </div>
             </div>
@@ -213,6 +67,7 @@
     </div>
 </div>
 
+<script src="/js/comment.js"></script> <!-- comment.js 연결 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

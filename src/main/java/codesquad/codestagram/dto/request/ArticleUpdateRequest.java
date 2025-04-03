@@ -19,4 +19,9 @@ public class ArticleUpdateRequest {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public ArticleUpdateRequest(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
