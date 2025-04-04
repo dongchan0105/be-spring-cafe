@@ -27,8 +27,8 @@ public class Article extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @OrderBy("id asc") // 댓글 정렬
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OrderBy("createdDate DESC") // 댓글 정렬
     private List<Comment> comments;
 
     @Column(nullable = false)

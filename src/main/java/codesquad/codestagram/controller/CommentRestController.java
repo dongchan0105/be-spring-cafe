@@ -9,13 +9,11 @@ import codesquad.codestagram.dto.response.CommentResponse;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.CommentServiceV2;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Page;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/qna/comments")
@@ -61,7 +59,7 @@ public class CommentRestController {
     }
 
     // 댓글 목록 조회
-    @GetMapping("/{articleId}")
+    /*@GetMapping("/{articleId}")
     public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long articleId) {
         List<Comment> comments = commentService.getCommentsByArticleId(articleId);
         return ResponseEntity.ok(
@@ -69,6 +67,21 @@ public class CommentRestController {
                         .map(CommentResponse::from)
                         .toList()
         );
+    }*/
+
+    @GetMapping("/{articleId}")
+    public ResponseEntity<Page<CommentResponse>> getComments(
+            @PathVariable("articleId") long articleId,
+            @RequestParam(name = "page", defaultValue = "1") int page
+    ) {
+        // 1. 서비스 계층에서 댓글 페이지 조회
+        Page<Comment> commentPage = commentService.getCommentByArticleId(articleId, page);
+
+        // 2. Comment → CommentResponse 변환
+        Page<CommentResponse> responsePage = commentPage.map(CommentResponse::from);
+
+        // 3. 변환된 결과 반환
+        return ResponseEntity.ok(responsePage);
     }
 }
 

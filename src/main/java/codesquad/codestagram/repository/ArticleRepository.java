@@ -23,8 +23,11 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findArticlesByUser(User user);
 
 
-    // Soft Delete 적용 시
-    @EntityGraph(attributePaths = {"user"})
+    @EntityGraph(
+            attributePaths = {"user", "comments"},
+            type = EntityGraph.EntityGraphType.FETCH
+    )
+
     @Query("SELECT a FROM Article a WHERE a.deleted = false ORDER BY a.createdDate DESC")
     Page<Article> findAllActiveOrderByCreatedDateDesc(Pageable pageable);
 

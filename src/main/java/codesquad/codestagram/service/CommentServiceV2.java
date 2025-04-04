@@ -7,6 +7,9 @@ import codesquad.codestagram.repository.ArticleRepository;
 import codesquad.codestagram.repository.CommentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,5 +45,10 @@ public class CommentServiceV2 {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
         return article.getComments();
+    }
+
+    public Page<Comment> getCommentByArticleId(Long articleId,int page) {
+        return commentRepository.findByArticleIdOrderByCreatedDateDesc(articleId, PageRequest.of(
+                page-1,5, Sort.by("createdDate").descending()));
     }
 }

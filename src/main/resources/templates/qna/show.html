@@ -5,69 +5,381 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 상세</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-        /* 기존 스타일 유지 */
-        .article-container { max-width: 800px; margin: 20px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .comments-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #dee2e6; }
-        .comments-title { margin-bottom: 20px; color: #333; }
-        .comment-item { padding: 15px; border-bottom: 1px solid #dee2e6; }
-        .comment-header { display: flex; justify-content: space-between; margin-bottom: 10px; color: #666; font-size: 0.9rem; }
-        .comment-content { margin-bottom: 10px; line-height: 1.5; }
-        .comment-actions { display: flex; gap: 10px; }
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .article-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+        .article-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        .article-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .article-meta i {
+            color: #4dabf7;
+        }
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 30px;
+            white-space: pre-wrap;
+        }
+        .article-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .comments-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+        .comments-title {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+        }
+        .comment-count {
+            color: #868e96;
+            font-size: 1rem;
+        }
+        .comment-form {
+            margin-bottom: 30px;
+        }
+        .comment-form textarea {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            resize: none;
+            transition: all 0.2s;
+        }
+        .comment-form textarea:focus {
+            border-color: #4dabf7;
+            box-shadow: 0 0 0 0.2rem rgba(77, 171, 247, 0.25);
+        }
+        .comment-item {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            transition: all 0.2s;
+            background-color: #fff;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .comment-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .comment-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+        .comment-date {
+            color: #868e96;
+        }
+        .comment-content {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            color: #343a40;
+        }
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .comment-actions button {
+            padding: 4px 12px;
+            font-size: 0.85rem;
+            border-radius: 15px;
+        }
+        .empty-comments {
+            text-align: center;
+            padding: 3rem;
+            color: #868e96;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .empty-comments i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ced4da;
+        }
+        #load-more-btn {
+            padding: 8px 24px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        #load-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        #load-more-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .alert {
+            border-radius: 8px;
+            padding: 15px 20px;
+        }
+        .alert-link {
+            color: #4dabf7;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .alert-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
-<body class="bg-light">
+<body>
 <div class="container">
     <div class="article-container">
         <!-- 게시글 정보 -->
         <div class="article-header">
-            <h1 class="article-title" th:text="${article.title}">제목</h1>
+            <h1 class="article-title" th:text="${article.title}">게시글 제목</h1>
             <div class="article-meta">
-                <span><i class="bi bi-person-circle"></i><span th:text="${article.user.name}">작성자</span></span>
+                <span>
+                    <i class="bi bi-person-circle"></i>
+                    <span th:text="${article.user.name}">작성자</span>
+                </span>
+                <span>
+                    <i class="bi bi-calendar3"></i>
+                    <span th:text="${#temporals.format(article.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                </span>
+                <span>
+                    <i class="bi bi-chat-dots"></i>
+                    <span th:text="${article.comments.size()}">댓글 수</span>
+                </span>
             </div>
         </div>
 
+        <!-- 게시글 내용 -->
         <div class="article-content" th:text="${article.content}">
             게시글 내용
         </div>
 
+        <!-- 게시글 액션 버튼 -->
+        <div class="article-actions" th:if="${session.loginUser != null and session.loginUser.id == article.user.id}">
+            <a th:href="@{/qna/articles/{id}/edit(id=${article.id})}" class="btn btn-outline-primary btn-action">
+                <i class="bi bi-pencil"></i> 수정
+            </a>
+            <form th:action="@{/qna/articles/{id}/delete(id=${article.id})}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-outline-danger btn-action" onclick="return confirm('정말 삭제하시겠습니까?')">
+                    <i class="bi bi-trash"></i> 삭제
+                </button>
+            </form>
+        </div>
+
         <!-- 댓글 섹션 -->
         <div class="comments-section">
-            <h3 class="comments-title">댓글</h3>
+            <h3 class="comments-title">
+                <i class="bi bi-chat-dots"></i> 댓글
+                <span id="comment-count" class="comment-count">(0)</span>
+            </h3>
 
             <!-- 댓글 작성 폼 -->
             <div th:if="${session.loginUser != null}" class="comment-form">
-                <textarea id="comment-input" class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
-                <!-- 댓글 작성 버튼 -->
-                <button th:attr="data-article-id=${article.id}" onclick="addComment(this.dataset.articleId)" class="btn btn-primary">
-                    댓글 작성
-                </button>
+                <form id="comment-form">
+                    <textarea id="comment-input" class="form-control" rows="3"
+                              placeholder="댓글을 입력하세요 (최대 500자)" required></textarea>
+                    <button type="submit" class="btn btn-primary mt-2">
+                        <i class="bi bi-send"></i> 댓글 작성
+                    </button>
+                </form>
             </div>
             <div th:unless="${session.loginUser != null}" class="alert alert-info">
-                댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.
+                댓글을 작성하려면 <a th:href="@{/login}" class="alert-link">로그인</a>이 필요합니다
             </div>
 
             <!-- 댓글 목록 -->
-            <div id="comment-list" class="comments-list mt-4">
-                <!-- 댓글 항목 -->
-                <div th:each="comment : ${article.comments}" class="comment-item" id="comment-[[${comment.id}]]">
-                    <div class="comment-header">
-                        <span class="comment-author" th:text="${comment.user.name}">작성자</span>
-                        <span class="comment-date" th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</span>
-                    </div>
-                    <div class="comment-content" th:text="${comment.comment}">댓글 내용</div>
-                    <!-- 댓글 수정/삭제 버튼 -->
-                    <div class="comment-actions" th:if="${session.loginUser != null and session.loginUser.id == comment.user.id}">
-                        <button onclick="deleteComment(this.dataset.commentId)" data-comment-id="${comment.id}">삭제</button>
-                    </div>
-                </div>
+            <div id="comment-container" class="comments-list mt-4"></div>
+
+            <!-- 더보기 버튼 -->
+            <div class="text-center mt-4">
+                <button id="load-more-btn" class="btn btn-outline-primary"
+                        th:data-article-id="${article.id}"
+                        data-current-page="1">
+                    <i class="bi bi-arrow-clockwise"></i> 댓글 더보기 (+5)
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<script src="/js/comment.js"></script> <!-- comment.js 연결 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const articleId = document.getElementById('load-more-btn').dataset.articleId;
+        let currentPage = 1;
+        let totalComments = 0;
+
+        // 댓글 로딩 함수
+        const loadComments = async () => {
+            try {
+                const res = await fetch(`/qna/comments/${articleId}?page=${currentPage}`);
+                const { content, totalElements, last } = await res.json();
+
+                // 댓글 렌더링
+                content.forEach(comment => {
+                    const commentHTML = `
+                    <div class="comment-item" id="comment-${comment.id}">
+                        <div class="comment-header">
+                            <span class="comment-author">
+                                <i class="bi bi-person-circle"></i>
+                                ${comment.user}
+                            </span>
+                            <span class="comment-date">${comment.createdDate}</span>
+                        </div>
+                        <div class="comment-content">${comment.comment}</div>
+                        ${comment.isOwner ? `
+                        <div class="comment-actions">
+                            <button onclick="deleteComment(${comment.id})"
+                                    class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i> 삭제
+                            </button>
+                        </div>` : ''}
+                    </div>
+                `;
+                    document.getElementById('comment-container').insertAdjacentHTML('beforeend', commentHTML);
+                });
+
+                // 상태 업데이트
+                totalComments = totalElements;
+                document.getElementById('comment-count').textContent = `(${totalElements})`;
+                currentPage++;
+
+                // 버튼 제어
+                if (last) {
+                    const btn = document.getElementById('load-more-btn');
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="bi bi-check-circle"></i> 모든 댓글을 불러왔습니다';
+                }
+            } catch (error) {
+                console.error('댓글 로딩 오류:', error);
+                alert('댓글을 불러오는 중 오류가 발생했습니다.');
+            }
+        };
+
+        // 초기 댓글 로드
+        loadComments();
+
+        // 더보기 버튼 이벤트
+        document.getElementById('load-more-btn').addEventListener('click', loadComments);
+
+        // 댓글 작성 처리
+        document.getElementById('comment-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const content = document.getElementById('comment-input').value.trim();
+            if (!content) return;
+
+            try {
+                const res = await fetch(`/qna/comments/${articleId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ comment: content })
+                });
+
+                if (res.ok) {
+                    const newComment = await res.json();
+                    const commentHTML = `
+                    <div class="comment-item" id="comment-${newComment.id}">
+                        <div class="comment-header">
+                            <span class="comment-author">
+                                <i class="bi bi-person-circle"></i>
+                                ${newComment.user}
+                            </span>
+                            <span class="comment-date">${newComment.createdDate}</span>
+                        </div>
+                        <div class="comment-content">${newComment.comment}</div>
+                        <div class="comment-actions">
+                            <button onclick="deleteComment(${newComment.id})"
+                                    class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i> 삭제
+                            </button>
+                        </div>
+                    </div>
+                `;
+                    document.getElementById('comment-container').insertAdjacentHTML('afterbegin', commentHTML);
+                    document.getElementById('comment-input').value = '';
+                    totalComments++;
+                    document.getElementById('comment-count').textContent = `(${totalComments})`;
+                } else {
+                    alert('댓글 작성에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('댓글 작성 오류:', error);
+                alert('댓글 작성 중 오류가 발생했습니다.');
+            }
+        });
+    });
+
+    // 댓글 삭제 함수
+    async function deleteComment(commentId) {
+        if (!confirm('정말 삭제하시겠습니까?')) return;
+
+        try {
+            const res = await fetch(`/qna/comments/${commentId}`, { method: 'DELETE' });
+            if (res.ok) {
+                document.getElementById(`comment-${commentId}`).remove();
+                const countElement = document.getElementById('comment-count');
+                const currentCount = parseInt(countElement.textContent.slice(1, -1));
+                countElement.textContent = `(${currentCount - 1})`;
+            } else {
+                alert('댓글 삭제에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('삭제 오류:', error);
+            alert('댓글 삭제 중 오류가 발생했습니다.');
+        }
+    }
+</script>
 </body>
 </html>
