@@ -1,62 +1,197 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QnA 게시판</title>
+    <title>Q&A 목록</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <style>
-        .article-list {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .article-card {
-            padding: 15px;
-            border-bottom: 1px solid #dee2e6;
-            transition: background-color 0.2s;
-        }
-        .article-card:hover {
+        body {
             background-color: #f8f9fa;
+            padding-top: 2rem;
+        }
+        .list-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .list-title {
+            font-size: 2rem;
+            color: #343a40;
+            margin: 0;
+        }
+        .btn-write {
+            background-color: #4dabf7;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        .btn-write:hover {
+            background-color: #339af0;
+            transform: translateY(-2px);
+        }
+        .article-list {
+            margin-top: 1rem;
+        }
+        .article-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+        .article-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
         }
         .article-title {
             font-size: 1.2rem;
-            color: #333;
+            color: #343a40;
+            margin-bottom: 0.5rem;
             text-decoration: none;
-            margin-bottom: 5px;
         }
         .article-title:hover {
-            color: #0d6efd;
+            color: #4dabf7;
         }
         .article-meta {
+            display: flex;
+            gap: 1rem;
+            color: #868e96;
             font-size: 0.9rem;
-            color: #6c757d;
+        }
+        .article-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .article-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .article-comments {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #868e96;
+        }
+        .empty-list {
+            text-align: center;
+            padding: 3rem;
+            color: #868e96;
+        }
+        .empty-list i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ced4da;
+        }
+        /* 페이징 스타일 */
+        .pagination {
+            margin-top: 2rem;
+        }
+        .page-link {
+            color: #4dabf7;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.2rem;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        .page-link:hover {
+            background-color: #e9ecef;
+            color: #339af0;
+            transform: translateY(-2px);
+        }
+        .page-item.active .page-link {
+            background-color: #4dabf7;
+            color: white;
+        }
+        .page-item.disabled .page-link {
+            color: #ced4da;
+            pointer-events: none;
         }
     </style>
 </head>
-<body class="bg-light">
-<div class="container">
+<body>
+<div class="list-container">
+    <div class="list-header">
+        <h1 class="list-title">Q&A</h1>
+        <a th:href="@{/qna/articles/write}" class="btn btn-write">
+            <i class="bi bi-pencil-square"></i>질문하기
+        </a>
+    </div>
+
+    <!-- 게시글 목록 -->
     <div class="article-list">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>QnA 게시판</h2>
-            <a th:href="@{/qna/form}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> 글쓰기
-            </a>
+        <div th:if="${articles.empty}" class="empty-list">
+            <i class="bi bi-chat-square-text"></i>
+            <h3>아직 작성된 질문이 없습니다</h3>
+            <p>첫 번째 질문을 작성해보세요!</p>
         </div>
 
-        <div class="article-card" th:each="article : ${articles}">
+        <!-- 게시글 반복 출력 -->
+        <div th:each="article : ${articles}" class="article-item">
             <a th:href="@{/qna/articles/{articleId}(articleId=${article.id})}" class="article-title">
-                <h3 th:text="${article.title}">제목</h3>
+                <span th:text="${article.title}">게시글 제목</span>
             </a>
             <div class="article-meta">
-                <span>작성자: <span th:text="${article.user.name}">작성자</span></span>
+                    <span class="article-author">
+                        <i class="bi bi-person"></i>
+                        <span th:text="${article.user.name}">작성자</span>
+                    </span>
+                <span class="article-date">
+                        <i class="bi bi-calendar3"></i>
+                        <span th:text="${#temporals.format(article.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</span>
+                    </span>
+                <span class="article-comments">
+                        <i class="bi bi-chat-dots"></i>
+                        <span th:text="${article.comments.size()}">0</span>
+                    </span>
             </div>
         </div>
+
     </div>
+
+    <!-- 페이지네이션 -->
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <!-- 이전 버튼 -->
+            <li th:classappend="${pageInfo.hasPrev} ? '' : 'disabled'" class="page-item">
+                <a th:href="@{/qna(page=${pageInfo.startPage - 1})}" class="page-link">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+
+            <!-- 페이지 번호 -->
+            <li th:each="page : ${#numbers.sequence(pageInfo.startPage, pageInfo.endPage)}"
+                th:classappend="${page == pageInfo.currentPage} ? 'active'"
+                class="page-item">
+                <a th:href="@{/qna(page=${page})}" 
+                   th:text="${page}"
+                   class="page-link">
+                </a>
+            </li>
+
+            <!-- 다음 버튼 -->
+            <li th:classappend="${pageInfo.hasNext} ? '' : 'disabled'" class="page-item">
+                <a th:href="@{/qna(page=${pageInfo.endPage + 1})}" class="page-link">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

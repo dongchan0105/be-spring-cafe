@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 
 import java.util.Collections;
 import java.util.List;
@@ -67,7 +68,7 @@ class ArticleServiceTest {
         when(articleRepository.findAll()).thenReturn(Collections.singletonList(deletedArticle));
 
         // When
-        List<Article> result = articleService.getArticles();
+        Page<Article> result = articleService.getArticles(1);
 
         // Then
         assertThat(result).isEmpty();

@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "Articles")
 @SQLDelete(sql = "UPDATE articles SET deleted = true WHERE id = ?")
 @Where(clause = "deleted = false")
-public class Article {
+public class Article extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

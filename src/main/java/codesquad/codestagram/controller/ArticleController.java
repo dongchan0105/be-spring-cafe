@@ -8,6 +8,7 @@ import codesquad.codestagram.dto.request.ArticleWriteRequest;
 import codesquad.codestagram.service.ArticleService;
 import codesquad.codestagram.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +31,21 @@ public class ArticleController {
     }
 
     // 모든 게시글 조회
-    @GetMapping()
+    /*@GetMapping()
     public String viewQuestions(Model model) {
         List<Article> articles = articleService.getArticles();
         model.addAttribute("articles", articles);
+        return "qna/list";
+    }*/
+
+    @GetMapping()
+    public String viewArticles(
+            @RequestParam(name = "page",defaultValue = "1") int page,
+            Model model
+    ) {
+        Page<Article> articlePage = articleService.getArticles(page);
+        model.addAttribute("articles", articlePage.getContent());
+        model.addAttribute("pageInfo", articleService.getPaginationData(articlePage));
         return "qna/list";
     }
 
